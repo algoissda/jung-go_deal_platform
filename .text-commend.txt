@@ -65,8 +65,104 @@ Installing devDependencies:
 - eslint
 - eslint-config-next
 
+git remote add origin https://github.com/algoissda/jung-go_deal_platform.git
+git branch -M main
+git push -u origin main
+
 위의 상태를 기본값으로 시작한다.
+html lang="ko"이가 기본이다.
 소스코드가 수정되거나 추가될때 영향을 받는 소스코드를 모두 출력할것.
 모든 내용을 메모리에 저장하여 요구사항에 충족하는 방향으로 소스코드를 작성할것.
 npm 모듈이 사용가능할 경우 사용할것.
-주기적으로 
+주기적으로 디렉토리 구조를 출력할것.
+모듈을 다운로드할때는 다운로드 명령어를 출력할것.
+주기적으로 git status, add, push할 것.
+파일을 옮기는 것을 허용하며 이 행동을 실행할때 명령어를 사용할것.
+
+아래는 소스코드의 임의로 수정한 기본값
+//src/app/(root)/page.tsx
+function HomePage() {
+  return <div>중고마켓</div>;
+}
+export default HomePage;
+////////////////////////////////
+//src/app/layout.tsx
+import type { Metadata } from "next";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "중고마켓",
+  description: "중고거래 플랫폼",
+};
+
+export default function HTMLLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ko">
+      <body className={` antialiased`}>{children}</body>
+    </html>
+  );
+}
+////////////////////////////////////
+//src/app/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+//////////////////////
+아래는 supabase에서 설정된 것들이다.
+
+Database Tables:
+deals
+
+Enable read access for all users
+
+Enable insert for authenticated users only
+
+Enable update for users based on authorId:{
+  create policy "Enable update for users based on authorId"
+  on "public"."deals"
+  as PERMISSIVE
+  for UPDATE
+  to public
+  using (
+    (select auth.uid()) = "authorId"
+
+  with check (
+    (select auth.uid()) = "authorId"
+  );
+}
+
+Enable delete for users based on user_id:{
+  create policy "Enable delete for users based on user_id"
+  on "public"."deals"
+  as PERMISSIVE
+  for DELETE
+  to public
+  using (
+    (select auth.uid()) = "authorId"
+  );
+}
+/////////
+
+Storage policies:
+deals Public{
+  SELECT
+Enable authenticated user do anything 1ktzlz_0
+INSERT
+Enable authenticated user do anything 1ktzlz_1
+UPDATE
+Enable authenticated user do anything 1ktzlz_2
+DELETE
+Enable authenticated user do anything 1ktzlz_3
+SELECT
+Enable public to read 1ktzlz_0
+}
+
+CREATE POLICY "Enable public to read 1ktzlz_0" ON storage.objects FOR SELECT TO public USING (bucket_id = 'deals');
+
+CREATE POLICY "Enable authenticated user do anything 1ktzlz_0" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'deals');
+CREATE POLICY "Enable authenticated user do anything 1ktzlz_1" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'deals');
