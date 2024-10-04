@@ -1,4 +1,4 @@
-import DealForm from "@/app/(root)/components/DealForm";
+import DealForm from "@/app/(root)/_components/DealForm";
 import { useDealStore } from "@/app/(root)/store/dealStore";
 import { useRouter } from "next/router";
 

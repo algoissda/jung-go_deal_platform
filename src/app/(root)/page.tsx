@@ -1,16 +1,21 @@
 import { useModalStore } from "@/app/(root)/store/modalStore";
-import LoginPage from "./auth/login/page";
+import Modal from "@/app/(root)/_components/Modal";
+import LoginForm from "@/app/(root)/_components/LoginForm";
 
 export default function HomePage() {
-  const { openModal } = useModalStore();
+  const { openModal, isOpen } = useModalStore();
 
   return (
     <div>
       <h1>중고마켓</h1>
       <button onClick={openModal}>로그인</button>
 
-      {/* 로그인 모달 표시 */}
-      <LoginPage />
+      {/* 모달이 열리면 로그인 폼을 표시 */}
+      {isOpen && (
+        <Modal>
+          <LoginForm />
+        </Modal>
+      )}
     </div>
   );
 }

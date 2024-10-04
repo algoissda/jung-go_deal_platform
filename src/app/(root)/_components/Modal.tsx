@@ -6,9 +6,7 @@ interface ModalProps {
 }
 
 export default function Modal({ children }: ModalProps) {
-  const { isOpen, closeModal } = useModalStore();
-
-  if (!isOpen) return null;
+  const { closeModal } = useModalStore();
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
