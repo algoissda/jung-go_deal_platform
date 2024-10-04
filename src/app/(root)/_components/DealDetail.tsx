@@ -1,4 +1,4 @@
-import { Deal } from "@/store/dealStore";
+import { Deal } from "../store/dealStore";
 
 interface DealDetailProps {
   deal: Deal;

@@ -1,23 +1,8 @@
-"use client"; // 클라이언트 컴포넌트로 지정
-
-import { useModalStore } from "@/app/(root)/store/modalStore";
-import Modal from "@/app/(root)/_components/Modal";
-import LoginForm from "@/app/(root)/_components/LoginForm";
-
-export default function HomePage() {
-  const { openModal, isOpen } = useModalStore();
-
+export default function SignUpPage() {
   return (
     <div>
-      <h1>중고마켓</h1>
-      <button onClick={openModal}>로그인</button>
-
-      {/* 모달이 열리면 로그인 폼을 표시 */}
-      {isOpen && (
-        <Modal>
-          <LoginForm />
-        </Modal>
-      )}
+      <h1>회원가입</h1>
+      <p>회원가입 폼을 여기에 추가하세요</p>
     </div>
   );
 }
