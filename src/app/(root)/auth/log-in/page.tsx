@@ -1,23 +1,34 @@
-import Modal from "@/app/(root)/_components/Modal";
-import { useModalStore } from "@/app/(root)/store/modalStore";
-import { useState } from "react";
+"use client";
 
-export default function LoginPage() {
-  const { closeModal } = useModalStore();
+import { useState } from "react";
+import { supabase } from "@/app/(root)/utils/supabase";
+import { useRouter } from "next/router";
+
+export default function LogInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 여기에 로그인 로직을 추가합니다
-    console.log("로그인 시도", { email, password });
-    closeModal(); // 로그인 성공 후 모달을 닫음
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      setError(error.message);
+    } else {
+      // 로그인 성공 시 홈 페이지로 이동
+      router.push("/");
+    }
   };
 
   return (
-    <Modal>
+    <div className="container mx-auto py-8">
       <h1>로그인</h1>
-      <form onSubmit={handleLogin}>
+      {error && <p className="text-red-500">{error}</p>}
+      <form onSubmit={handleLogIn}>
         <div>
           <label htmlFor="email">이메일</label>
           <input
@@ -40,6 +51,6 @@ export default function LoginPage() {
         </div>
         <button type="submit">로그인</button>
       </form>
-    </Modal>
+    </div>
   );
 }
