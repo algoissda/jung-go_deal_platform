@@ -1,0 +1,72 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+제출된 pdf의 내용에 따라 요구사항에 충족하는 프로젝트를 완성하시오.
+
+$ npx create-next-app@latest
+√ What is your project named? ... jung-go_deal_platform
+√ Would you like to use TypeScript? ...  Yes
+√ Would you like to use ESLint? ...  Yes
+√ Would you like to use Tailwind CSS? ...  Yes
+√ Would you like to use `src/` directory? ...  Yes
+√ Would you like to use App Router? (recommended) ...  Yes
+√ Would you like to customize the default import alias (@/*)? ... No  
+Creating a new Next.js app in C:\Users\algoissda\Desktop\Project\Web Project\Web FN\12 Week\5st\jung-go_deal_platform.
+
+Initializing project with template: app-tw
+
+
+Installing dependencies:
+- react
+- react-dom
+- next
+
+Installing devDependencies:
+- typescript
+- @types/node
+- @types/react
+- @types/react-dom
+- postcss
+- tailwindcss
+- eslint
+- eslint-config-next
+
+위의 상태를 기본값으로 시작한다.
+소스코드가 수정되거나 추가될때 영향을 받는 소스코드를 모두 출력할것.
+모든 내용을 메모리에 저장하여 요구사항에 충족하는 방향으로 소스코드를 작성할것.
+npm 모듈이 사용가능할 경우 사용할것.
+주기적으로 
