@@ -1,8 +1,8 @@
-"use client";
+"use client"; // 클라이언트 컴포넌트로 지정
 
 import { useState } from "react";
 import { supabase } from "@/app/(root)/utils/supabase";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function LogInPage() {
   const [email, setEmail] = useState("");

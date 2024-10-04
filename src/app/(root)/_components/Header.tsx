@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useModalStore } from "@/app/(root)/store/modalStore";
 import { supabase } from "@/app/(root)/utils/supabase";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const [session, setSession] = useState(null);
+  const { openModal } = useModalStore();
 
   useEffect(() => {
     const getSession = async () => {
@@ -21,7 +23,6 @@ export default function Header() {
       }
     );
 
-    // Cleanup subscription when component unmounts
     return () => {
       authListener.subscription.unsubscribe();
     };
@@ -29,7 +30,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setSession(null); // 로그아웃 후 세션 초기화
+    setSession(null);
   };
 
   return (
@@ -49,16 +50,9 @@ export default function Header() {
             내 판매글
           </Link>
           {session ? (
-            // 로그인이 된 경우: 로그아웃 버튼 표시
             <button onClick={handleLogout}>로그아웃</button>
           ) : (
-            // 로그인이 안된 경우: 로그인/회원가입 링크 표시
-            <>
-              <Link href="/auth/log-in" className="mr-4">
-                로그인
-              </Link>
-              <Link href="/auth/sign-up">회원가입</Link>
-            </>
+            <button onClick={openModal}>로그인</button>
           )}
         </div>
       </nav>
