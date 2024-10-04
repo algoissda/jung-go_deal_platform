@@ -6,22 +6,20 @@ export default function Header() {
   return (
     <header className="bg-white py-4 shadow-md">
       <nav className="container mx-auto px-4 flex justify-between items-center">
-        <Link href="/">
-          <a className="text-2xl font-bold">중고마켓</a>
+        <Link href="/" className="text-2xl font-bold">
+          중고마켓
         </Link>
         <div>
-          <Link href="/buy">
-            <a className="mr-4">구입하기</a>
+          <Link href="/buy" className="mr-4">
+            구입하기
           </Link>
-          <Link href="/sell">
-            <a className="mr-4">판매하기</a>
+          <Link href="/sell" className="mr-4">
+            판매하기
           </Link>
-          <Link href="/my-deals">
-            <a className="mr-4">내 판매글</a>
+          <Link href="/my-deals" className="mr-4">
+            내 판매글
           </Link>
-          <Link href="/auth/login">
-            <a>로그인</a>
-          </Link>
+          <Link href="/auth/login">로그인</Link>
         </div>
       </nav>
     </header>
