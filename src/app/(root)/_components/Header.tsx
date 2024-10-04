@@ -52,7 +52,12 @@ export default function Header() {
           {session ? (
             <button onClick={handleLogout}>로그아웃</button>
           ) : (
-            <button onClick={openModal}>로그인</button>
+            <>
+              <button onClick={openModal} className="mr-4">
+                로그인
+              </button>
+              <Link href="/auth/sign-up">회원가입</Link>
+            </>
           )}
         </div>
       </nav>
