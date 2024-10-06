@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/app/(root)/utils/supabase"; // Supabase 유틸 가져오기
+import { supabase } from "@/app/(root)/utils/supabase";
+import { useModalStore } from "../../store/modalStore";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -10,18 +11,17 @@ export default function SignUpPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { openModal } = useModalStore();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 비밀번호 확인
     if (password !== confirmPassword) {
       setError("비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    // Supabase로 회원가입 요청
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -29,7 +29,7 @@ export default function SignUpPage() {
     if (error) {
       setError(error.message);
     } else {
-      router.push("/log-in"); // 성공적으로 회원가입 후 로그인 페이지로 이동
+      router.push("/");
     }
   };
 
