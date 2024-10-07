@@ -1,66 +1,56 @@
 "use client";
 
+import { useEffect } from "react";
+import { useAuthStore } from "@/app/(root)/store/authStore"; // Zustand로 로그인 상태 관리
+import { useModalStore } from "@/app/(root)/store/modalStore"; // 로그인 모달 상태 관리
 import Link from "next/link";
-import { useModalStore } from "@/app/(root)/store/modalStore";
-import { supabase } from "@/app/(root)/utils/supabase";
-import { useEffect, useState } from "react";
+import { supabase } from "../utils/supabase";
 
 export default function Header() {
-  const [session, setSession] = useState(null);
-  const { openModal } = useModalStore();
+  const { user, initUser, clearUser } = useAuthStore(); // Zustand로 로그인 상태 관리
+  const { openModal } = useModalStore(); // 로그인 모달 제어 함수
 
+  // 페이지 로드 시 로그인 상태 초기화
   useEffect(() => {
-    const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-    };
-
-    getSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+    initUser(); // 로그인 상태 초기화
+  }, [initUser]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setSession(null);
+    clearUser(); // 로그아웃 후 유저 상태 초기화
   };
 
   return (
-    <header className="bg-white py-4 shadow-md">
-      <nav className="container mx-auto px-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold">
-          중고마켓
-        </Link>
-        <div>
-          <Link href="/buy" className="mr-4">
-            구입하기
+    <>
+      <header className="fixed top-0 left-0 w-full bg-white shadow-md z-10">
+        <div className="flex justify-between p-4 max-w-screen-xl mx-auto">
+          <Link href="/" className="text-xl font-bold">
+            중고마켓
           </Link>
-          <Link href="/sell" className="mr-4">
-            판매하기
-          </Link>
-          <Link href="/my-deals" className="mr-4">
-            내 판매글
-          </Link>
-          {session ? (
-            <button onClick={handleLogout}>로그아웃</button>
-          ) : (
-            <>
-              <button onClick={openModal} className="mr-4">
-                로그인
+          <nav className="space-x-4">
+            <Link href="/deals/create" className="text-gray-700">
+              판매하기
+            </Link>
+            <Link href="/my-deals" className="text-gray-700">
+              내 판매글
+            </Link>
+            {user ? (
+              <button onClick={handleLogout} className="text-gray-700">
+                로그아웃
               </button>
-              <Link href="/auth/sign-up">회원가입</Link>
-            </>
-          )}
+            ) : (
+              <>
+                <button onClick={openModal} className="text-gray-700">
+                  로그인
+                </button>
+                <Link href="/auth/sign-up" className="text-gray-700">
+                  회원가입
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
-      </nav>
-    </header>
+      </header>
+    </>
   );
 }

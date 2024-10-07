@@ -1,18 +1,23 @@
+"use client";
+
 import { ReactNode } from "react";
-import Header from "@/app/(root)/_components/Header"; // 공통 헤더 불러오기
-import "../globals.css"; // 글로벌 CSS 적용
+import { useModalStore } from "@/app/(root)/store/modalStore";
+import LoginModal from "./_components/LoginModal";
+import Header from "./_components/Header";
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const { isOpen, closeModal } = useModalStore();
+
   return (
     <html lang="ko">
-      <body>
-        {/* 헤더 컴포넌트를 공통으로 포함 */}
+      <body className="antialiased">
         <Header />
         <main>{children}</main>
+        {isOpen && <LoginModal onClose={closeModal} />}
       </body>
     </html>
   );

@@ -1,35 +1,102 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/app/(root)/utils/supabase";
+import { useModalStore } from "@/app/(root)/store/modalStore";
 
-export default function CreateDealPage() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [location, setLocation] = useState("");
-  const [price, setPrice] = useState("");
-  const [error, setError] = useState("");
+export default function SellPage() {
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [error, setError] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const alertShown = useRef(false);
   const router = useRouter();
+  const { openModal } = useModalStore();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      if (data?.session) {
+        setUserId(data.session.user.id);
+      } else {
+        router.push("/");
+
+        if (!alertShown.current) {
+          alertShown.current = true;
+
+          setTimeout(() => {
+            openModal();
+            alert("로그인 후 판매글을 작성할 수 있습니다.");
+          }, 300);
+        }
+      }
+    };
+
+    fetchUser();
+  }, [router, openModal]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setImageFile(file);
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile) return null;
+
+    const fileExt = imageFile.name.split(".").pop();
+    const fileName = `${userId}-${Date.now()}.${fileExt}`;
+    const filePath = `public/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("deals")
+      .upload(filePath, imageFile);
+
+    if (uploadError) {
+      setError(uploadError.message);
+      return null;
+    }
+
+    const { data } = supabase.storage.from("deals").getPublicUrl(filePath);
+    return data.publicUrl;
+  };
 
   const handleCreateDeal = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 입력값 확인
-    if (!title || !content || !location || !price) {
-      setError("모든 필드를 입력하세요.");
+    if (!title || !content || !location || !price || isNaN(Number(price))) {
+      setError("모든 필드를 올바르게 입력하세요.");
       return;
     }
 
-    // Supabase에 판매글 추가
-    const { data, error } = await supabase
-      .from("deals")
-      .insert([{ title, content, location, price: Number(price) }]);
+    if (!userId) {
+      setError("로그인 후 판매글을 작성할 수 있습니다.");
+      return;
+    }
+
+    const imageUrl = await uploadImage();
+    const numericPrice = Number(price);
+
+    const { error } = await supabase.from("deals").insert([
+      {
+        title,
+        content,
+        location,
+        price: numericPrice,
+        authorId: userId,
+        createdAt: new Date(),
+        imageUrl,
+      },
+    ]);
 
     if (error) {
       setError(error.message);
     } else {
-      router.push("/my-deals"); // 판매글 작성 후 내 판매글 페이지로 이동
+      router.push("/my-deals");
     }
   };
 
@@ -80,16 +147,28 @@ export default function CreateDealPage() {
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="price" className="block mb-2 text-sm font-medium">
               판매 가격
             </label>
             <input
               id="price"
-              type="number"
+              type="text"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="image" className="block mb-2 text-sm font-medium">
+              이미지 업로드
+            </label>
+            <input
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>

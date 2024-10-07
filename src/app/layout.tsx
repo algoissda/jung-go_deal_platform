@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 
 export default function HTMLLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ko">
-      <body className={` antialiased`}>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
